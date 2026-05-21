@@ -1,6 +1,4 @@
 #include <iostream>
-#include <queue>
-#include <stack>
 #include <iomanip>
 using namespace std;
 
@@ -65,24 +63,27 @@ void hiasan(string judul){
 }
 
 void main_menu(){
-    cout << "1. Tambah Lagu" << endl;
-    cout << "2. Tampil Daftar Lagu" << endl;
-    cout << "3. Cari Lagu" << endl;
-    cout << "4. Tambah Lagu ke Playlist" << endl;
-    cout << "5. Lihat Playlist" << endl;
-    cout << "6. Putar Playlist" << endl;
-    cout << "7. Replay Lagu" << endl;
-    cout << "8. Riwayat Lagu" << endl;
-    cout << "9. Hapus Lagu" << endl;
-    cout << "10. Keluar Program" << endl;
-    cout << "Pilih menu : ";
-    cin >> menu_pilihan;
+    do {
+        cout << "1. Tambah Lagu" << endl;
+        cout << "2. Tampil Daftar Lagu" << endl;
+        cout << "3. Cari Lagu" << endl;
+        cout << "4. Tambah Lagu ke Playlist" << endl;
+        cout << "5. Lihat Playlist" << endl;
+        cout << "6. Putar Playlist" << endl;
+        cout << "7. Replay Lagu" << endl;
+        cout << "8. Riwayat Lagu" << endl;
+        cout << "9. Hapus Lagu" << endl;
+        cout << "10. Keluar Program" << endl;
+        cout << "Pilih menu : ";
+        cin >> menu_pilihan;
+    } while (menu_pilihan < 1 || menu_pilihan > 10);
 }
 
 void tampilkan(PTB* root){
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
-    cout << "|" << setw(30) << left << root->data_lagu.judul_lagu << "|" << setw(15) << left << root->data_lagu.penyanyi << "|" << setw(10) << left << root->data_lagu.durasi << "|" << setw(15) << left << root->data_lagu.tahun_terbit << "|" << endl;
+    cout << "|" << setw(30) << left << root->data_lagu.judul_lagu << "|" << setw(15) << left << root->data_lagu.penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << root->data_lagu.durasi << "|" << setw(15) << left << root->data_lagu.tahun_terbit << "|" << endl;
+    // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
 }
 
 void preorder(PTB* root){
@@ -183,6 +184,11 @@ void tambah_ke_playlist(string lagu_masuk_playlist){
 }
 
 void tampil_playlist(){
+    if(playlist.belakang == -1){
+        cout << "yahh...playlistmu masih kosong :(" << endl;
+        return;
+    }
+
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
     cout << "|" << setw(30) << left << "JUDUL LAGU" << "|" << setw(15) << left << "PENYANYI" << "|" << setw(10) << left << "DURASI" << "|" << setw(15) << left << "TAHUN TERBIT" << "|" << endl;
@@ -190,14 +196,23 @@ void tampil_playlist(){
     for (int i = playlist.depan; i <= playlist.belakang; i++){
         for (int i = 1; i < 75; i++) { cout << "-"; }
         cout << endl;
-        cout << "|" << setw(30) << left << playlist.data_lagu[i].judul_lagu << "|" << setw(15) << left << playlist.data_lagu[i].penyanyi << "|" << setw(10) << left << playlist.data_lagu[i].durasi << "|" << setw(15) << left << playlist.data_lagu[i].tahun_terbit << "|" << endl;
+        cout << "|" << setw(30) << left << playlist.data_lagu[i].judul_lagu << "|" << setw(15) << left << playlist.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << playlist.data_lagu[i].durasi << "|" << setw(15) << left << playlist.data_lagu[i].tahun_terbit << "|" << endl;
+        // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
     }
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
 }
 
 void putar_playlist(){
+    if(playlist.belakang == -1){
+        cout << "yahh...playlistmu masih kosong :(" << endl;
+        return;
+    }
+
     for(int i = playlist.depan; i <= playlist.belakang; i++){
+        riwayat.top++;
+        riwayat.data_lagu[riwayat.top] = playlist.data_lagu[i];
+        
         cout << "==================================" << endl;
         cout << "Sedang memutar:" << endl;
         cout << playlist.data_lagu[i].judul_lagu << " - " << playlist.data_lagu[i].penyanyi  << endl;
@@ -209,9 +224,14 @@ void putar_playlist(){
             cout << "2. Stop Putar Playlist?" << endl;
             cout << "Pilihan : ";
             cin >> lanjut_putar;
-        } while (lanjut_putar != 1 || lanjut_putar != 2);
+        } while (lanjut_putar != 1 && lanjut_putar != 2);
         
         if (lanjut_putar == 2){
+            break;
+        }
+
+        if (i == playlist.belakang){
+            cout << "playlist selesai diputar (lagu habis)" << endl;
             break;
         }
     }
@@ -244,17 +264,38 @@ void replay(string lagu_replay){
             cin >> jml;
 
             jumlah_replay = jml / temukan_lagu->data_lagu.durasi;
+
+            cout << "Jumlah replay : " << jumlah_replay << endl;
         }
 
         cout << "Memutar lagu..." << endl;
         for (int i = 0; i < jumlah_replay; i++){
+            riwayat.top++;
+            riwayat.data_lagu[riwayat.top] = temukan_lagu->data_lagu;
+
             cout << i+1 << ". " << temukan_lagu->data_lagu.judul_lagu << " - " << temukan_lagu->data_lagu.penyanyi << endl;
         }
     }
 }
 
 void riwayat_lagu(){
-    
+    if(riwayat.top == -1){
+        cout << "yahh...playlistmu masih kosong :(" << endl;
+        return;
+    }
+
+    for (int i = 1; i < 75; i++) { cout << "-"; }
+    cout << endl;
+    cout << "|" << setw(30) << left << "JUDUL LAGU" << "|" << setw(15) << left << "PENYANYI" << "|" << setw(10) << left << "DURASI" << "|" << setw(15) << left << "TAHUN TERBIT" << "|" << endl;
+
+    for (int i = riwayat.top; i >= 0; i--){
+        for (int i = 1; i < 75; i++) { cout << "-"; }
+        cout << endl;
+        cout << "|" << setw(30) << left << riwayat.data_lagu[i].judul_lagu << "|" << setw(15) << left << riwayat.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << riwayat.data_lagu[i].durasi << "|" << setw(15) << left << riwayat.data_lagu[i].tahun_terbit << "|" << endl;
+        // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
+    }
+    for (int i = 1; i < 75; i++) { cout << "-"; }
+    cout << endl;
 }
 
 void hapus_lagu(){
@@ -289,11 +330,14 @@ int main(){
             hiasan("HASIL PENCARIAN");
             cout << endl;
 
-            cout << setw(15) << left << "Judul Lagu" << ":" << hasil_cari->data_lagu.judul_lagu << endl; 
-            cout << setw(15) << left << "Penyanyi" << ":" << hasil_cari->data_lagu.penyanyi << endl; 
-            cout << setw(15) << left << "Tahun Terbit" << ":" << hasil_cari->data_lagu.tahun_terbit << endl; 
-            cout << setw(15) << left << "Durasi" << ":" << hasil_cari->data_lagu.durasi << endl; 
-
+            if(hasil_cari == NULL){
+                cout << "Lagu tidak ditemukan" << endl;
+            } else {
+                cout << setw(15) << left << "Judul Lagu" << ":" << hasil_cari->data_lagu.judul_lagu << endl; 
+                cout << setw(15) << left << "Penyanyi" << ":" << hasil_cari->data_lagu.penyanyi << endl; 
+                cout << setw(15) << left << "Tahun Terbit" << ":" << hasil_cari->data_lagu.tahun_terbit << endl; 
+                cout << setw(15) << left << "Durasi" << ":" << hasil_cari->data_lagu.durasi << endl; 
+            }
         } else if (menu_pilihan == 4){
             hiasan("TAMBAH LAGU KE PLAYLIST");
             cout << "Masukkan nama lagu :";
@@ -338,6 +382,9 @@ int main(){
             }
         } while (next != 'Y' && next != 'N');
         system("cls");
-    } while (menu_pilihan != 10 || menu_pilihan < 1 || menu_pilihan > 10    );
-
+    } while (menu_pilihan != 10);
+    
+    system("cls");
+    cout << "\nMakasih guys!";
+    return 0;
 }
