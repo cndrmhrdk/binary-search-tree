@@ -34,7 +34,7 @@ struct Queue{
 Queue playlist;
 
 int menu_pilihan, pilih_metode_tampil;
-string input_judul_lagu, input_penyanyi, input_tahun_terbit, input_durasi, nama_lagu_cari, lagu_masuk_playlist, lagu_replay;
+string input_judul_lagu, input_penyanyi, input_tahun_terbit, input_durasi, nama_lagu_cari, lagu_masuk_playlist, lagu_replay, lagu_hapus;
 
 PTB* buat_ptb(lagu input_lagu){
     PTB* baru = new PTB;
@@ -247,10 +247,12 @@ void replay(string lagu_replay){
         int mode_replay, jumlah_replay;
 
         hiasan("MODE REPLAY");
-        cout << "\n1. Berdasarkan jumlah" << endl;
-        cout << "2. Berdasarkan menit" << endl;
-        cout << "pilihan : ";
-        cin >> mode_replay;
+        do{
+            cout << "\n1. Berdasarkan jumlah" << endl;
+            cout << "2. Berdasarkan menit" << endl;
+            cout << "pilihan : ";
+            cin >> mode_replay;
+        } while(mode_replay != 1 && mode_replay != 2);
 
         if(mode_replay == 1){
             int jml;
@@ -280,25 +282,55 @@ void replay(string lagu_replay){
 
 void riwayat_lagu(){
     if(riwayat.top == -1){
-        cout << "yahh...playlistmu masih kosong :(" << endl;
+        cout << "yahh...riwayatmu masih kosong :(" << endl;
         return;
     }
 
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
-    cout << "|" << setw(30) << left << "JUDUL LAGU" << "|" << setw(15) << left << "PENYANYI" << "|" << setw(10) << left << "DURASI" << "|" << setw(15) << left << "TAHUN TERBIT" << "|" << endl;
+    cout << "|" << setw(3) << left << "NO" << "|" << setw(30) << left << "JUDUL LAGU" << "|" << setw(15) << left << "PENYANYI" << "|" << setw(10) << left << "DURASI" << "|" << setw(15) << left << "TAHUN TERBIT" << "|" << endl;
 
     for (int i = riwayat.top; i >= 0; i--){
         for (int i = 1; i < 75; i++) { cout << "-"; }
         cout << endl;
-        cout << "|" << setw(30) << left << riwayat.data_lagu[i].judul_lagu << "|" << setw(15) << left << riwayat.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << riwayat.data_lagu[i].durasi << "|" << setw(15) << left << riwayat.data_lagu[i].tahun_terbit << "|" << endl;
+        cout << "|" << setw(3) << left << i+1 << "|" << setw(30) << left << riwayat.data_lagu[i].judul_lagu << "|" << setw(15) << left << riwayat.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << riwayat.data_lagu[i].durasi << "|" << setw(15) << left << riwayat.data_lagu[i].tahun_terbit << "|" << endl;
         // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
     }
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
 }
 
-void hapus_lagu(){
+void hapus_lagu(PTB* &root, string lagu_hapus){
+    if (root == NULL){
+        cout << "Lagu tidak ditemukan" << endl;
+        return;
+    }
+
+    if (lagu_hapus < root->data_lagu.judul_lagu){
+        hapus_lagu(root->left, lagu_hapus);
+    } else if (lagu_hapus > root->data_lagu.judul_lagu){
+        hapus_lagu(root->right, lagu_hapus);
+    } else {
+        PTB *hapus_node = root;
+    
+        if(root->left == NULL){
+            root = root->right;
+        } else if (root->right == NULL){
+            root = root->left;
+        } else {
+            PTB *successor = root->right;
+    
+            while(successor->left != NULL){
+                successor = successor->left;
+            }
+    
+            root->data_lagu = successor->data_lagu;
+            hapus_lagu(root->right, successor->data_lagu.judul_lagu);
+            return;
+        }
+
+        delete hapus_node;
+    }
 
 }
 
@@ -363,7 +395,11 @@ int main(){
             riwayat_lagu();
         } else if (menu_pilihan == 9){
             hiasan("HAPUS LAGU");
-            hapus_lagu();
+            cout << "Masukkan judul lagu yang akan dihapus : ";
+            cin.ignore();
+            getline(cin, lagu_hapus);
+
+            hapus_lagu(root, lagu_hapus);
         } else if (menu_pilihan == 10){
             break;
         }
