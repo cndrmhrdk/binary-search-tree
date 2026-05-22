@@ -128,7 +128,7 @@ void tambah_lagu(){
     getline(cin, input_lagu.penyanyi);
     cout << "Tahun Terbit : ";
     cin >> input_lagu.tahun_terbit;
-    cout << "Durasi Lagu : ";
+    cout << "Durasi Lagu (menit): ";
     cin >> input_lagu.durasi;
 
     root = cari_root(root, input_lagu);
