@@ -288,12 +288,12 @@ void riwayat_lagu(){
 
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
-    cout << "|" << setw(3) << left << "NO" << "|" << setw(30) << left << "JUDUL LAGU" << "|" << setw(15) << left << "PENYANYI" << "|" << setw(10) << left << "DURASI" << "|" << setw(15) << left << "TAHUN TERBIT" << "|" << endl;
+    cout << "|" << setw(30) << left << "JUDUL LAGU" << "|" << setw(15) << left << "PENYANYI" << "|" << setw(10) << left << "DURASI" << "|" << setw(15) << left << "TAHUN TERBIT" << "|" << endl;
 
     for (int i = riwayat.top; i >= 0; i--){
         for (int i = 1; i < 75; i++) { cout << "-"; }
         cout << endl;
-        cout << "|" << setw(3) << left << i+1 << "|" << setw(30) << left << riwayat.data_lagu[i].judul_lagu << "|" << setw(15) << left << riwayat.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << riwayat.data_lagu[i].durasi << "|" << setw(15) << left << riwayat.data_lagu[i].tahun_terbit << "|" << endl;
+        cout << "|" << setw(30) << left << riwayat.data_lagu[i].judul_lagu << "|" << setw(15) << left << riwayat.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << riwayat.data_lagu[i].durasi << "|" << setw(15) << left << riwayat.data_lagu[i].tahun_terbit << "|" << endl;
         // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakang koma
     }
     for (int i = 1; i < 75; i++) { cout << "-"; }
@@ -330,8 +330,8 @@ void hapus_lagu(PTB* &root, string lagu_hapus){
         }
 
         delete hapus_node;
+        cout << "Lagu berhasil dihapus";
     }
-
 }
 
 int main(){
