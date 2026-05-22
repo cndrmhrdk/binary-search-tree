@@ -83,7 +83,7 @@ void tampilkan(PTB* root){
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
     cout << "|" << setw(30) << left << root->data_lagu.judul_lagu << "|" << setw(15) << left << root->data_lagu.penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << root->data_lagu.durasi << "|" << setw(15) << left << root->data_lagu.tahun_terbit << "|" << endl;
-    // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
+    // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakang koma
 }
 
 void preorder(PTB* root){
@@ -197,7 +197,7 @@ void tampil_playlist(){
         for (int i = 1; i < 75; i++) { cout << "-"; }
         cout << endl;
         cout << "|" << setw(30) << left << playlist.data_lagu[i].judul_lagu << "|" << setw(15) << left << playlist.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << playlist.data_lagu[i].durasi << "|" << setw(15) << left << playlist.data_lagu[i].tahun_terbit << "|" << endl;
-        // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
+        // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakang koma
     }
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
@@ -294,7 +294,7 @@ void riwayat_lagu(){
         for (int i = 1; i < 75; i++) { cout << "-"; }
         cout << endl;
         cout << "|" << setw(3) << left << i+1 << "|" << setw(30) << left << riwayat.data_lagu[i].judul_lagu << "|" << setw(15) << left << riwayat.data_lagu[i].penyanyi << "|" << setw(10) << left << fixed << setprecision(2) << riwayat.data_lagu[i].durasi << "|" << setw(15) << left << riwayat.data_lagu[i].tahun_terbit << "|" << endl;
-        // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakagn koma
+        // fixed << setprecision(2) --> buat nampilin banyaknya angka di belakang koma
     }
     for (int i = 1; i < 75; i++) { cout << "-"; }
     cout << endl;
